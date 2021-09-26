@@ -22,7 +22,7 @@ public class SecretController {
 		return (List<Secret>) secretRepository.findAll();
 	}
 	
-	@GetMapping("/secrets/{id}")
+	@GetMapping("/secret/{id}")
 	public @ResponseBody Optional<Secret> getSecretById(@PathVariable("id") Long secretId){
 		return secretRepository.findById(secretId);
 	}
