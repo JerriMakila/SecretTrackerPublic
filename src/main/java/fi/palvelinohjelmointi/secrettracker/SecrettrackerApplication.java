@@ -30,6 +30,7 @@ public class SecrettrackerApplication {
 			lRepo.save(new Location("Testilokaatio2"));
 			tRepo.save(new Tool("Testityökalu", tpRepo.findByToolType("Testityyppi1").get(0)));
 			sRepo.save(new Secret("Testisalaisuus", false, lRepo.findByLocation("Testilokaatio1").get(0), tRepo.findByTool("Testityökalu").get(0)));
+			sRepo.save(new Secret("Testisalaisuus", false, lRepo.findByLocation("Testilokaatio1").get(0), tRepo.findByTool("Testityökalu").get(0)));
 		};
 	}
 }
