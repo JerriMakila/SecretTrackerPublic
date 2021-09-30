@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -112,5 +113,17 @@ public class SecretController {
 		clearedSecret.setCleared(true);
 		secretRepository.save(clearedSecret);
 		return new ResponseEntity<>(secret, HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/secrets/{id}")
+	public @ResponseBody ResponseEntity<Optional<Secret>> deleteSecret(@PathVariable("id") Long secretId){
+		Optional<Secret> secret = secretRepository.findById(secretId);
+		
+		if(secret.isEmpty()) {
+			return new ResponseEntity<>(secret, HttpStatus.NOT_FOUND);
+		}
+		
+		secretRepository.delete(secret.get());
+		return new ResponseEntity<>(secret, HttpStatus.NO_CONTENT);
 	}
 }

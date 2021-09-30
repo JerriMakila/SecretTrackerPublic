@@ -43,5 +43,13 @@ public class Location {
 	public void setLocation(String location) {
 		this.location = location;
 	}
+
+	public List<Secret> getSecrets() {
+		return secrets;
+	}
+
+	public void setSecrets(List<Secret> secrets) {
+		this.secrets = secrets;
+	}
 	
 }
