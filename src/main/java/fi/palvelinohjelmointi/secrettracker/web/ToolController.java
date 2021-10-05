@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import fi.palvelinohjelmointi.secrettracker.domain.Secret;
+import fi.palvelinohjelmointi.secrettracker.domain.SecretRepository;
 import fi.palvelinohjelmointi.secrettracker.domain.Tool;
 import fi.palvelinohjelmointi.secrettracker.domain.ToolRepository;
 import fi.palvelinohjelmointi.secrettracker.domain.ToolType;
@@ -28,6 +30,9 @@ public class ToolController {
 	
 	@Autowired
 	private ToolTypeRepository toolTypeRepository;
+	
+	@Autowired
+	private SecretRepository secretRepository;
 	
 	@GetMapping("/tools")
 	public @ResponseBody List<Tool> tools(){
@@ -62,6 +67,8 @@ public class ToolController {
 		Optional<Tool> tool = toolRepository.findById(toolId);
 		Optional<ToolType> toolType = toolTypeRepository.findById(toolDto.getTooltypeId());
 		
+		
+		
 		if(tool.isEmpty()) {
 			return new ResponseEntity<>(new Tool(), HttpStatus.NOT_FOUND);
 		}
@@ -79,15 +86,21 @@ public class ToolController {
 	}
 	
 	@DeleteMapping("/tools/{id}")
-	public @ResponseBody ResponseEntity<Optional<Tool>> deleteTool(@PathVariable("id") Long toolId){
+	public @ResponseBody ResponseEntity<String> deleteTool(@PathVariable("id") Long toolId){
+		
 		Optional<Tool> tool = toolRepository.findById(toolId);
 		
 		if(tool.isEmpty()) {
-			return new ResponseEntity<>(tool, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("No ToolType found with the given id", HttpStatus.NOT_FOUND);
 		}
 		
-		toolRepository.delete(tool.get());
+		List<Secret> secrets = secretRepository.findByToolId(tool.get());
 		
-		return new ResponseEntity<>(tool, HttpStatus.NO_CONTENT);
+		if(secrets.size() > 0) {
+			return new ResponseEntity<>("Tool has already been linked with a secret", HttpStatus.BAD_REQUEST);
+		}
+		
+		toolRepository.deleteById(toolId);
+		return new ResponseEntity<>("Tool deleted succesfully", HttpStatus.NO_CONTENT);
 	}
 }
