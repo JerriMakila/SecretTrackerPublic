@@ -72,7 +72,7 @@ public class SecretController {
 	}
 	
 	@PutMapping("/secrets/{id}")
-	public @ResponseBody ResponseEntity<Secret> modifyTicket(@RequestBody SecretDto secretDto, @PathVariable("id") Long secretId){
+	public @ResponseBody ResponseEntity<Secret> modifySecret(@RequestBody SecretDto secretDto, @PathVariable("id") Long secretId){
 		Optional<Secret> secret = secretRepository.findById(secretId);
 		Optional<Location> location = locationRepository.findById(secretDto.getLocationId());
 		Optional<Tool> tool = toolRepository.findById(secretDto.getToolId());
@@ -97,6 +97,7 @@ public class SecretController {
 		newSecret.setCleared(secretDto.isCleared());
 		newSecret.setLocationId(newLocation);
 		newSecret.setToolId(newTool);
+		secretRepository.save(newSecret);
 		
 		return new ResponseEntity<>(newSecret, HttpStatus.OK);
 	}
