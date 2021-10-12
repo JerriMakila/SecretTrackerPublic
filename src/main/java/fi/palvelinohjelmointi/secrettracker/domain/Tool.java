@@ -10,18 +10,27 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Validated
 public class Tool {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long toolId;
+	
+	@NotNull(message = "tool must have a name")
 	private String tool;
+	
+	@NotNull(message = "Tool must have a type")
 	@ManyToOne
 	@JoinColumn(name = "tooltype_id")
 	private ToolType tooltypeId;
+	
 	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="toolId")
 	private List<Secret> secrets;

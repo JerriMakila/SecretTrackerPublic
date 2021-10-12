@@ -6,17 +6,27 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.validation.annotation.Validated;
 
 @Entity
+@Validated
 public class Secret {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long secretId;
+	
+	@NotNull(message = "Secret must have a name")
 	private String secret;
+	
 	private Boolean cleared;
+	
+	@NotNull(message = "Location cannot be null")
 	@ManyToOne
 	@JoinColumn(name = "location_id")
 	private Location locationId;
+	
 	@ManyToOne
 	@JoinColumn(name = "tool_id")
 	private Tool toolId;
@@ -29,6 +39,13 @@ public class Secret {
 		this.cleared = cleared;
 		this.locationId = locationId;
 		this.toolId = toolId;
+	}
+	
+	public Secret(String secret, Location locationId, Tool toolId) {
+		this.secret = secret;
+		this.locationId = locationId;
+		this.toolId = toolId;
+		this.cleared = false;
 	}
 
 	public Long getSecretId() {

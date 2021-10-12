@@ -1,11 +1,16 @@
 package fi.palvelinohjelmointi.secrettracker.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -23,6 +28,7 @@ import fi.palvelinohjelmointi.secrettracker.domain.SecretRepository;
 import fi.palvelinohjelmointi.secrettracker.domain.Tool;
 import fi.palvelinohjelmointi.secrettracker.domain.ToolRepository;
 import fi.palvelinohjelmointi.secrettracker.dto.SecretDto;
+import fi.palvelinohjelmointi.secrettracker.services.ErrorService;
 
 @RestController
 public class SecretController {
@@ -35,12 +41,15 @@ public class SecretController {
 	@Autowired
 	private ToolRepository toolRepository;
 	
+	@Autowired
+	private ErrorService errorService;
+	
 	@GetMapping("/secrets")
 	public @ResponseBody List<Secret> secrets(){
 		return (List<Secret>) secretRepository.findAll();
 	}
 	
-	@GetMapping("/secret/{id}")
+	@GetMapping("/secrets/{id}")
 	public @ResponseBody ResponseEntity<Optional<Secret>> getSecretById(@PathVariable("id") Long secretId){
 		Optional<Secret> secret = secretRepository.findById(secretId);
 		
@@ -51,14 +60,27 @@ public class SecretController {
 		}
 	}
 	
-	@PostMapping("/secret")
-	public @ResponseBody ResponseEntity<Secret> addSecret(@RequestBody SecretDto secret){
+	@PostMapping("/secrets")
+	public @ResponseBody ResponseEntity<Map<String, String>> addSecret(@Valid @RequestBody SecretDto secret, BindingResult bindingResult){
+		Map<String, String> response = new HashMap<>();
+		String message;
+		
+		if(bindingResult.hasErrors()) {			
+			message = errorService.createErrorMessage(bindingResult);
+			response.put("status", "400");
+			response.put("message", message);
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+		}
+		
 		Optional<Location> location = locationRepository.findById(secret.getLocationId());
 		Optional<Tool> tool = toolRepository.findById(secret.getToolId());
 		
 		if(location.isEmpty() || tool.isEmpty()) {
-			return new ResponseEntity<>(new Secret(
-					secret.getSecret(), false, null, null), HttpStatus.BAD_REQUEST);
+			message = "Either location or tool not found with given id's";
+			response.put("status", "400");
+			response.put("message", message);
+			
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 		
 		Secret newSecret = new Secret(
@@ -68,24 +90,51 @@ public class SecretController {
 				tool.get()
 		);
 		
-		return new ResponseEntity<>(secretRepository.save(newSecret), HttpStatus.CREATED);
+		secretRepository.save(newSecret);
+		message = "Secret created succesfully";
+		
+		response.put("status", "201");
+		response.put("message", message);
+		
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/secrets/{id}")
-	public @ResponseBody ResponseEntity<Secret> modifySecret(@RequestBody SecretDto secretDto, @PathVariable("id") Long secretId){
+	public @ResponseBody ResponseEntity<Map<String, String>> modifySecret(@Valid @RequestBody SecretDto secretDto, BindingResult bindingResult, @PathVariable("id") Long secretId){
+		Map<String, String> response = new HashMap<>();
+		String message;
+		
+		if(bindingResult.hasErrors()) {
+			message = errorService.createErrorMessage(bindingResult);
+			response.put("status", "400");
+			response.put("message", message);
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+		}
+		
 		Optional<Secret> secret = secretRepository.findById(secretId);
 		Optional<Location> location = locationRepository.findById(secretDto.getLocationId());
 		Optional<Tool> tool = toolRepository.findById(secretDto.getToolId());
 		
 		if(secret.isEmpty()) {
-			return new ResponseEntity<>(new Secret(), HttpStatus.NOT_FOUND);
+			message = "Secret with the given id not found";
+			
+			response.put("status", "404");
+			response.put("message", message);
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 		
 		Secret newSecret = secret.get();
 		Location newLocation = null;
 		Tool newTool = null;
 		
-		if(!location.isEmpty()) {
+		if(location.isEmpty()) {
+			message = "Location with the given id not found";
+			
+			response.put("status", "400");
+			response.put("message", message);
+			
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+		} else {
 			newLocation = location.get();
 		}
 		
@@ -97,9 +146,15 @@ public class SecretController {
 		newSecret.setCleared(secretDto.isCleared());
 		newSecret.setLocationId(newLocation);
 		newSecret.setToolId(newTool);
+		
 		secretRepository.save(newSecret);
 		
-		return new ResponseEntity<>(newSecret, HttpStatus.OK);
+		message = "Secret modified succesfully";
+		
+		response.put("status", "200");
+		response.put("message", message);
+		
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	@PatchMapping("/secrets/{id}")

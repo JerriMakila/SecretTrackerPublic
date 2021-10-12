@@ -1,9 +1,23 @@
 package fi.palvelinohjelmointi.secrettracker.dto;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.validation.annotation.Validated;
+
+
+@Validated
 public class SecretDto {
+	
+	@NotNull(message = "Secret must have a name")
 	private String secret;
 	private boolean cleared;
+	
+	@NotNull(message = "Secret must have a location")
+	@Min(value = 1, message = "locationId must be at least 1")
 	private long locationId;
+	
+	@Min(value = 1, message = "toolId must be at least 1")
 	private long toolId;
 	
 	public SecretDto() {}
