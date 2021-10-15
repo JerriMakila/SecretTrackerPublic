@@ -58,7 +58,7 @@ public class ToolTypeController {
 		Map<String, String> response = new HashMap<>();
 		String message;
 		
-		if(bindingResult.hasErrors()) {
+		if(bindingResult.hasErrors()) { // If validation notices error in request body
 			message = errorService.createErrorMessage(bindingResult);
 			response.put("status", "400");
 			response.put("message", message);
@@ -81,7 +81,7 @@ public class ToolTypeController {
 		Map<String, String> response = new HashMap<>();
 		String message;
 		
-		if(bindingResult.hasErrors()) {
+		if(bindingResult.hasErrors()) { // If validation notices error in request body
 			message = errorService.createErrorMessage(bindingResult);
 			response.put("status", "400");
 			response.put("message", message);
@@ -126,7 +126,7 @@ public class ToolTypeController {
 		
 		List<Tool> tools = toolRepository.findByTooltypeId(toolType.get());
 		
-		if(tools.size() > 0) {
+		if(tools.size() > 0) { // If there are tools associated with the tool type in question
 			message = "Tooltype has benn already linked with tools";
 			response.put("status", "400");
 			response.put("message", message);

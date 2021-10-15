@@ -10,6 +10,7 @@ import org.springframework.validation.ObjectError;
 public class ErrorService {
 	private String message;
 	
+	// Provides a way to create error messages when validation notices errors in data sent from client
 	public String createErrorMessage(BindingResult bindingResult) {
 		List<ObjectError> errors = bindingResult.getAllErrors();
 		StringBuilder errorMessage = new StringBuilder(errors.size());

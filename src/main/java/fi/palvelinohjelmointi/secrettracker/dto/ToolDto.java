@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.validation.annotation.Validated;
 
+// Works as a data transfer object when sending tool-entities in Request Body
 @Validated
 public class ToolDto {
 	
