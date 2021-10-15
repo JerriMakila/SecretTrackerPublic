@@ -75,19 +75,26 @@ public class SecretController {
 		Optional<Location> location = locationRepository.findById(secret.getLocationId());
 		Optional<Tool> tool = toolRepository.findById(secret.getToolId());
 		
-		if(location.isEmpty() || tool.isEmpty()) {
-			message = "Either location or tool not found with given id's";
+		if(location.isEmpty()) {
+			message = "Location not found with given id";
 			response.put("status", "400");
 			response.put("message", message);
 			
 			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 		
+		Location newLocation = location.get();
+		Tool newTool = null;
+		
+		if(tool.isPresent()) {
+			newTool = tool.get();
+		}
+		
 		Secret newSecret = new Secret(
 				secret.getSecret(),
 				false,
-				location.get(),
-				tool.get()
+				newLocation,
+				newTool
 		);
 		
 		secretRepository.save(newSecret);
@@ -158,17 +165,27 @@ public class SecretController {
 	}
 	
 	@PatchMapping("/secrets/{id}")
-	public @ResponseBody ResponseEntity<Optional<Secret>> markSecretAsCleared(@PathVariable("id") Long secretId){
+	public @ResponseBody ResponseEntity<Map<String, String>> markSecretAsCleared(@PathVariable("id") Long secretId){
+		Map<String, String> response = new HashMap<>();
+		String message;
+		
 		Optional<Secret> secret = secretRepository.findById(secretId);
 		
 		if(secret.isEmpty()) {
-			return new ResponseEntity<>(secret, HttpStatus.NOT_FOUND);
+			message = "Secret with the given id was not found";
+			response.put("status", "404");
+			response.put("message", message);
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 		
 		Secret clearedSecret = secret.get();
 		clearedSecret.setCleared(true);
 		secretRepository.save(clearedSecret);
-		return new ResponseEntity<>(secret, HttpStatus.OK);
+		
+		message = "Secret modified succesfully";
+		response.put("status", "200");
+		response.put("message", message);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/secrets/{id}")

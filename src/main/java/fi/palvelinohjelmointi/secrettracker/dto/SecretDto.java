@@ -17,7 +17,6 @@ public class SecretDto {
 	@Min(value = 1, message = "locationId must be at least 1")
 	private long locationId;
 	
-	@Min(value = 1, message = "toolId must be at least 1")
 	private long toolId;
 	
 	public SecretDto() {}

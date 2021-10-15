@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add new location</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<h1>Hello World!</h1>
+    <form id="location-form" onsubmit="processForm(event, 'locations', 'location-form')">
+        <label for="location">Location: </label>
+        <input type="text" name="location" id="location">
+        <input type="submit" value="Add">
+    </form>
+    <script type="text/javascript" th:src="@{/scripts/addentity.js}"></script>
+</body>

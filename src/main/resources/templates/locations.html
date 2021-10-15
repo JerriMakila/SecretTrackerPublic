@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Locations</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<div><h1>Locations</h1></div>
+    <p><a href="/addlocation">Add a location</a></p>
+    <div>
+        <table>
+            <thead>
+                <th>Location</th>
+                <th>Secrets</th>
+            </thead>
+            <tbody id='location-table'>
+
+            </tbody>
+        </table>
+    </div>
+    <!-- <script src="../static/scripts/locationlist.js"></script> -->
+    <script type="text/javascript" th:src="@{/scripts/locationlist.js}"></script>
+</body>
