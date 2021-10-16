@@ -21,7 +21,7 @@ public class SecrettrackerApplication {
 		SpringApplication.run(SecrettrackerApplication.class, args);
 	}
 	
-	@Bean
+	/*@Bean
 	public CommandLineRunner secretDemo(ToolTypeRepository tpRepo, LocationRepository lRepo, ToolRepository tRepo, SecretRepository sRepo) {
 		return(args) ->{
 			tpRepo.save(new ToolType("Testityyppi1"));
@@ -32,5 +32,5 @@ public class SecrettrackerApplication {
 			sRepo.save(new Secret("Testisalaisuus", false, lRepo.findByLocation("Testilokaatio1").get(0), tRepo.findByTool("Testityökalu").get(0)));
 			sRepo.save(new Secret("Testisalaisuus", false, lRepo.findByLocation("Testilokaatio1").get(0), tRepo.findByTool("Testityökalu").get(0)));
 		};
-	}
+	}*/
 }
