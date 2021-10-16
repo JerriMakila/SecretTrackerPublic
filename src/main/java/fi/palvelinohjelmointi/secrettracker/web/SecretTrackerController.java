@@ -31,4 +31,14 @@ public class SecretTrackerController {
 	public String modifySecret() {
 		return "modifysecret";
 	}
+	
+	@GetMapping("/addtool")
+	public String addTool() {
+		return "addtool";
+	}
+	
+	@GetMapping("/addtooltype")
+	public String addTooltype() {
+		return "addtooltype";
+	}
 }

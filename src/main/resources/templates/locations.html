@@ -7,7 +7,7 @@
 <body>
 	<div><h1>Locations</h1></div>
     <p><a href="/addlocation">Add a location</a></p>
-    <div>
+    <div class="locations-table">
         <table>
             <thead>
                 <th>Location</th>
@@ -17,6 +17,14 @@
 
             </tbody>
         </table>
+    </div>
+    <div class="nav-links">
+        <div class="nav-link-wrapper">
+            <a href="/addtooltype">Create new tooltype</a>
+        </div>
+        <div class="nav-link-wrapper">
+            <a href="/addtool">Create new tool</a>
+        </div>
     </div>
     <!-- <script src="../static/scripts/locationlist.js"></script> -->
     <script type="text/javascript" th:src="@{/scripts/locationlist.js}"></script>

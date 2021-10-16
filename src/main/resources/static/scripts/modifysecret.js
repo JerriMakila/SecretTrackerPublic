@@ -19,7 +19,7 @@ async function getTools(){
     let toolsSelect = "<option>Unknown</option>";
 
     for(const tool of tools){
-        toolsSelect += `<option value="${tool.toolId}">${tool.tool}</option`;
+        toolsSelect += `<option value="${tool.toolId}">${tool.tool}</option>`;
     }
 
     document.getElementById("toolId").innerHTML = toolsSelect;
