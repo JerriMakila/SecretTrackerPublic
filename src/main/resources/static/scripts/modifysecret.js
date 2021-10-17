@@ -64,6 +64,10 @@ async function processForm(event){
 
     const request = JSON.stringify(body);
     const response = await submitForm(request, id);
+
+    if(response.status === "200"){
+        document.location.href = `/secretsbylocation/${secretDto.locationId}`;
+    }
 }
 
 async function submitForm(request, id){
@@ -76,10 +80,8 @@ async function submitForm(request, id){
     });
 
     const response = await data.json();
-    
-    if(response.status === "200"){
-        document.location.href = `/secretsbylocation/${secretDto.locationId}`;
-    }
+
+    return response;
 }
 
 function getPathVariable(){

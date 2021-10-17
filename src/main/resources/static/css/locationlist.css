@@ -1,0 +1,22 @@
+h1{
+    margin-bottom: 20px;
+}
+
+.button{
+    margin-bottom: 5px;
+    width: 200px;
+}
+
+.content{
+    text-align: center;
+}
+
+.location-column{
+    width: 80%;
+}
+
+.locations-table{
+    margin: auto;
+    text-align: left;
+    width: 500px;
+}

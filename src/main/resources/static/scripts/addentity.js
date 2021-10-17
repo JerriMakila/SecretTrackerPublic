@@ -13,7 +13,11 @@ async function processForm(event, endpoint, formId){
     const formData = new FormData(form);
     let body = {};
 
-    for(const [key, value] of formData){
+    for(let [key, value] of formData){
+        if(value === ''){
+            value = null;
+        }
+
         body[key] = value;
     }
 

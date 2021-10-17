@@ -3,29 +3,33 @@
 <head>
     <title>Locations</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}" />
+    <link type="text/css" rel="stylesheet" href="css/css.css" th:href="@{css/locationlist.css}" />
 </head>
 <body>
-	<div><h1>Locations</h1></div>
-    <p><a href="/addlocation">Add a location</a></p>
-    <div class="locations-table">
-        <table>
-            <thead>
-                <th>Location</th>
-                <th>Secrets</th>
-            </thead>
-            <tbody id='location-table'>
-
-            </tbody>
-        </table>
-    </div>
-    <div class="nav-links">
-        <div class="nav-link-wrapper">
-            <a href="/addtooltype">Create new tooltype</a>
+    <div class="content">
+        <div><h1>Locations</h1></div>
+        <p><a class="button btn btn-success" href="/addlocation">Add a location</a></p>
+        <div class="locations-table">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <th class="location-column">Location</th>
+                    <th>Secrets</th>
+                </thead>
+                <tbody id='location-table'>
+                </tbody>
+            </table>
         </div>
-        <div class="nav-link-wrapper">
-            <a href="/addtool">Create new tool</a>
+        <div class="nav-links">
+            <div class="nav-link-wrapper">
+                <a class="button btn btn-success" href="/addtooltype">Create new tooltype</a>
+            </div>
+            <div class="nav-link-wrapper">
+                <a class="button btn btn-success" href="/addtool">Create new tool</a>
+            </div>
         </div>
     </div>
+	
     <!-- <script src="../static/scripts/locationlist.js"></script> -->
     <script type="text/javascript" th:src="@{/scripts/locationlist.js}"></script>
 </body>

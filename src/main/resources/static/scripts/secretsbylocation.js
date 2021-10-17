@@ -44,13 +44,13 @@ async function showSecrets(){
             console.log(secret);
             const cleared = secret.cleared === false ? "No" : "Yes";
             const tool = secret.toolId !== null ? `<td>${secret.toolId.tool}</td>` : `<td>Unknown</td>`;
-            const setAsCleared = secret.cleared === false ? `<td><button onclick='setAsCleared(${secret.secretId})'>Set as cleared</button></td>` : `<td></td>`;
+            const setAsCleared = secret.cleared === false ? `<td><button class="btn btn-success" onclick='setAsCleared(${secret.secretId})'>Set as cleared</button></td>` : `<td></td>`;
             secretTable += `<tr><td>${secret.secret}</td>`
                 + `<td>${cleared}</td>`
                 + `${tool}`
                 + `${setAsCleared}`
-                + `<td><a href="/modifysecret/${secret.secretId}">Modify</a></td>`
-                + `<td><button onClick='deleteSecret(${secret.secretId})'>Delete</button</td></tr>`;
+                + `<td><a class="btn btn-warning" href="/modifysecret/${secret.secretId}">Modify</a></td>`
+                + `<td><button class="btn btn-danger" onClick='deleteSecret(${secret.secretId})'>Delete</button</td></tr>`;
         });
     }
    
