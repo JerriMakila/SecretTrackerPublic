@@ -41,4 +41,9 @@ public class SecretTrackerController {
 	public String addTooltype() {
 		return "addtooltype";
 	}
+	
+	@GetMapping("/showsecret/{id}")
+	public String showSecret() {
+		return "showsecret";
+	}
 }

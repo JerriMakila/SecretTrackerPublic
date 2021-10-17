@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -32,6 +35,7 @@ import fi.palvelinohjelmointi.secrettracker.services.ErrorService;
 
 @RestController
 public class SecretController {
+	
 	@Autowired
 	private SecretRepository secretRepository;
 	
@@ -85,16 +89,27 @@ public class SecretController {
 		
 		Location newLocation = location.get();
 		Tool newTool = null;
+		byte[] image = null;
 		
 		if(tool.isPresent()) {
 			newTool = tool.get();
+		}
+		
+		if(secret.getImage() != null) {
+			try {
+				image = Base64.getDecoder().decode(new String(secret.getImage()).getBytes("UTF-8"));
+			}catch(UnsupportedEncodingException e) {
+				
+			}
+			
 		}
 		
 		Secret newSecret = new Secret(
 				secret.getSecret(),
 				false,
 				newLocation,
-				newTool
+				newTool,
+				image
 		);
 		
 		secretRepository.save(newSecret);

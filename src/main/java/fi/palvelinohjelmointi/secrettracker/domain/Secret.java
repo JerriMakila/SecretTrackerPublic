@@ -5,9 +5,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
 import org.springframework.validation.annotation.Validated;
 
 @Entity
@@ -31,6 +33,9 @@ public class Secret {
 	@JoinColumn(name = "tool_id")
 	private Tool toolId;
 	
+	@Type(type="org.hibernate.type.BinaryType")
+	private byte[] image;
+	
 	public Secret() {}
 
 	public Secret(String secret, Boolean cleared, Location locationId, Tool toolId) {
@@ -45,6 +50,26 @@ public class Secret {
 		this.secret = secret;
 		this.locationId = locationId;
 		this.toolId = toolId;
+		this.cleared = false;
+	}
+
+	public Secret(@NotNull(message = "Secret must have a name") String secret, Boolean cleared,
+			@NotNull(message = "Location cannot be null") Location locationId, Tool toolId, byte[] image) {
+		super();
+		this.secret = secret;
+		this.cleared = cleared;
+		this.locationId = locationId;
+		this.toolId = toolId;
+		this.image = image;
+	}
+
+	public Secret(@NotNull(message = "Secret must have a name") String secret,
+			@NotNull(message = "Location cannot be null") Location locationId, Tool toolId, byte[] image) {
+		super();
+		this.secret = secret;
+		this.locationId = locationId;
+		this.toolId = toolId;
+		this.image = image;
 		this.cleared = false;
 	}
 
@@ -86,6 +111,14 @@ public class Secret {
 
 	public void setToolId(Tool toolId) {
 		this.toolId = toolId;
+	}
+
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
 	}
 	
 }

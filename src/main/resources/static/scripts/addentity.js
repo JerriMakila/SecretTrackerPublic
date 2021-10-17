@@ -1,14 +1,14 @@
 const baseUrl = "http://localhost:8080/";
 let pathVariables;
 
-function getPathVariable(){
+function getLocationId(){
     const pathname = window.location.pathname;
     pathVariables = pathname.split("/");
 }
 
 async function processForm(event, endpoint, formId){
     event.preventDefault();
-    getPathVariable();
+    getLocationId();
     const form = document.getElementById(formId);
     const formData = new FormData(form);
     let body = {};

@@ -1,5 +1,6 @@
 package fi.palvelinohjelmointi.secrettracker.dto;
 
+import javax.persistence.Lob;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -18,6 +19,7 @@ public class SecretDto {
 	private long locationId;
 	
 	private long toolId;
+	private String image;
 	
 	public SecretDto() {}
 
@@ -34,6 +36,28 @@ public class SecretDto {
 		this.cleared = cleared;
 		this.locationId = locationId;
 		this.toolId = toolId;
+	}
+
+	public SecretDto(@NotNull(message = "Secret must have a name") String secret, boolean cleared,
+			@NotNull(message = "Secret must have a location") @Min(value = 1, message = "locationId must be at least 1") long locationId,
+			long toolId, String image) {
+		super();
+		this.secret = secret;
+		this.cleared = cleared;
+		this.locationId = locationId;
+		this.toolId = toolId;
+		this.image = image;
+	}
+
+	public SecretDto(@NotNull(message = "Secret must have a name") String secret,
+			@NotNull(message = "Secret must have a location") @Min(value = 1, message = "locationId must be at least 1") long locationId,
+			long toolId, String image) {
+		super();
+		this.secret = secret;
+		this.locationId = locationId;
+		this.toolId = toolId;
+		this.image = image;
+		this.cleared = false;
 	}
 
 	public String getSecret() {
@@ -66,6 +90,14 @@ public class SecretDto {
 
 	public void setToolId(long toolId) {
 		this.toolId = toolId;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 	
 }

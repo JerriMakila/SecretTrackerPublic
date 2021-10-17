@@ -45,10 +45,12 @@ async function showSecrets(){
             const cleared = secret.cleared === false ? "No" : "Yes";
             const tool = secret.toolId !== null ? `<td>${secret.toolId.tool}</td>` : `<td>Unknown</td>`;
             const setAsCleared = secret.cleared === false ? `<td><button class="btn btn-success" onclick='setAsCleared(${secret.secretId})'>Set as cleared</button></td>` : `<td></td>`;
+            const hasImage = secret.image === null ? `<td></td>` : `<td><a class="btn btn-primary" href="/showsecret/${secret.secretId}">Show</a></td>`;
             secretTable += `<tr><td>${secret.secret}</td>`
                 + `<td>${cleared}</td>`
                 + `${tool}`
                 + `${setAsCleared}`
+                + `${hasImage}`
                 + `<td><a class="btn btn-warning" href="/modifysecret/${secret.secretId}">Modify</a></td>`
                 + `<td><button class="btn btn-danger" onClick='deleteSecret(${secret.secretId})'>Delete</button</td></tr>`;
         });
