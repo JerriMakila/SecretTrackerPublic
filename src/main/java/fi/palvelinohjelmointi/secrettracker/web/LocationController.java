@@ -34,11 +34,13 @@ public class LocationController {
 	@Autowired
 	private ErrorService errorService;
 	
+	// Get all locations in the database
 	@GetMapping("/locations")
 	public @ResponseBody List<Location> locations(){
 		return (List<Location>) locationRepository.findAll();
 	}
 	
+	//Get location with a specific id
 	@GetMapping("/locations/{id}")
 	public @ResponseBody ResponseEntity<Location> getLocationById(@PathVariable("id") Long locationId){
 		Optional<Location> location = locationRepository.findById(locationId);
@@ -50,6 +52,7 @@ public class LocationController {
 		}
 	}
 	
+	//Get all secrets associated with a specific location
 	@GetMapping("/locations/{id}/secrets")
 	public @ResponseBody ResponseEntity<List<Secret>> getSecretsByLocation(@PathVariable("id") Long locationId){
 		Optional<Location> location = locationRepository.findById(locationId);
@@ -61,13 +64,14 @@ public class LocationController {
 		return new ResponseEntity<>(location.get().getSecrets(), HttpStatus.OK);
 	}
 	
+	//Add a new location to the database
 	@PostMapping("/locations")
 	public @ResponseBody ResponseEntity<Map<String, String>> createLocation(@Valid @RequestBody Location location, BindingResult bindingResult){
 		Map<String, String> response = new HashMap<>();
 		String message;
 		
-		if(bindingResult.hasErrors()) {
-			message = errorService.createErrorMessage(bindingResult);
+		if(bindingResult.hasErrors()) { //If validation notices errors in the data
+			message = errorService.createErrorMessage(bindingResult); // A method from ErrorService
 			response.put("status", "400");
 			response.put("message", message);
 			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -81,22 +85,23 @@ public class LocationController {
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 	
+	// Modify a specific entry in the location-table
 	@PutMapping("/locations/{id}")
 	public @ResponseBody ResponseEntity<Map<String, String>> modifyLocation(@Valid @RequestBody Location requestLocation, BindingResult bindingResult, @PathVariable("id") Long locationId){
 		Map<String, String> response = new HashMap<>();
 		String message;
 		
-		if(bindingResult.hasErrors()) {
-			message = errorService.createErrorMessage(bindingResult);
+		if(bindingResult.hasErrors()) {//If validation notices errors in the data
+			message = errorService.createErrorMessage(bindingResult); // A method from ErrorService
 			
 			response.put("status", "400");
 			response.put("message", message);
 			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		Optional<Location> location = locationRepository.findById(locationId);
+		Optional<Location> location = locationRepository.findById(locationId); // Requesting the specific location from the database
 		
-		if(location.isEmpty()) {
+		if(location.isEmpty()) { // If a location with the given id was not found in the database
 			String errorMessage = "location with the given id does not exist";
 			response.put("status", "404");
 			response.put("message", errorMessage);
@@ -115,13 +120,14 @@ public class LocationController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
+	// Deletes a specific location from the location-table
 	@DeleteMapping("/locations/{id}")
 	public @ResponseBody ResponseEntity<Map<String, String>> deleteLocation(@PathVariable("id") Long locationId){
 		Map<String, String> response = new HashMap<>();
 		String message;
-		Optional<Location> location = locationRepository.findById(locationId);
+		Optional<Location> location = locationRepository.findById(locationId); // Getting a specific location from the database
 		
-		if(location.isEmpty()) {
+		if(location.isEmpty()) { // If a location with the given id was not found in the database
 			message = "Location with the given id does not exist";
 			
 			response.put("status", "404");
@@ -131,7 +137,7 @@ public class LocationController {
 		
 		Location foundLocation = location.get();
 		
-		if(foundLocation.getSecrets().size() > 0) {
+		if(foundLocation.getSecrets().size() > 0) { // Checking if the location has any secrets associated with it -> cannot be deleted from the database
 			message = "Cannot delete locations that have secrets associated with them";
 			
 			response.put("status", "400");

@@ -43,11 +43,13 @@ public class ToolController {
 	@Autowired
 	private ErrorService errorService;
 	
+	// Get all tools from the database
 	@GetMapping("/tools")
 	public @ResponseBody List<Tool> tools(){
 		return (List<Tool>) toolRepository.findAll();
 	}
 	
+	// Get a tool with a specific id
 	@GetMapping("tools/{id}")
 	public @ResponseBody ResponseEntity<Optional<Tool>> getToolById(@PathVariable("id") Long toolId){
 		Optional<Tool> tool = toolRepository.findById(toolId);
@@ -59,12 +61,13 @@ public class ToolController {
 		}
 	}
 	
+	// Create a new tool
 	@PostMapping("/tools")
 	public @ResponseBody ResponseEntity<Map<String, String>> addTool(@Valid @RequestBody ToolDto toolDto, BindingResult bindingResult){
 		Map<String, String> response = new HashMap<>();
 		String message;
 		
-		if(bindingResult.hasErrors()) {
+		if(bindingResult.hasErrors()) { // If validation finds any errors in the data
 			message = errorService.createErrorMessage(bindingResult);
 			response.put("status", "400");
 			response.put("message", message);
@@ -74,7 +77,7 @@ public class ToolController {
 		
 		Optional<ToolType> toolType = toolTypeRepository.findById(toolDto.getTooltypeId());
 		
-		if(toolType.isEmpty()) {
+		if(toolType.isEmpty()) { // If tool with the given id was not found
 			message = "ToolType with the given id not found";
 			
 			response.put("status", "400");
@@ -92,12 +95,13 @@ public class ToolController {
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 	
+	// Modify a tool
 	@PutMapping("/tools/{id}")
 	public @ResponseBody ResponseEntity<Map<String, String>> modifyTool(@Valid @RequestBody ToolDto toolDto, BindingResult bindingResult, @PathVariable("id") Long toolId){
 		Map<String, String> response = new HashMap<>();
 		String message;
 		
-		if(bindingResult.hasErrors()) {
+		if(bindingResult.hasErrors()) { // If validation finds errors in the data
 			message = errorService.createErrorMessage(bindingResult);
 			response.put("status", "400");
 			response.put("message", message);
@@ -108,14 +112,14 @@ public class ToolController {
 		Optional<Tool> tool = toolRepository.findById(toolId);
 		Optional<ToolType> toolType = toolTypeRepository.findById(toolDto.getTooltypeId());
 		
-		if(tool.isEmpty()) {
+		if(tool.isEmpty()) { // If tool with the given id was not found
 			message = "Tool with the given id not found";
 			response.put("status", "404");
 			response.put("message", message);
 			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		if(toolType.isEmpty()) {
+		if(toolType.isEmpty()) { // If toolType with the given id was not found
 			message = "ToolType with the given id not found";
 			response.put("status", "400");
 			response.put("message", message);
@@ -134,6 +138,7 @@ public class ToolController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
+	// Deletes a tool with specific id
 	@DeleteMapping("/tools/{id}")
 	public @ResponseBody ResponseEntity<Map<String, String>> deleteTool(@PathVariable("id") Long toolId){
 		Map<String, String> response = new HashMap<>();
@@ -141,7 +146,7 @@ public class ToolController {
 		
 		Optional<Tool> tool = toolRepository.findById(toolId);
 		
-		if(tool.isEmpty()) {
+		if(tool.isEmpty()) { // If tool with the given id was not found
 			message = "No tool found with the given id";
 			response.put("status", "404");
 			response.put("message", message);
@@ -150,7 +155,7 @@ public class ToolController {
 		
 		List<Secret> secrets = secretRepository.findByToolId(tool.get());
 		
-		if(secrets.size() > 0) {
+		if(secrets.size() > 0) { // If tool has any secrets associated with it -> cannot be deleted
 			message = "Tool has already been linked with a secret";
 			response.put("status", "400");
 			response.put("message", message);

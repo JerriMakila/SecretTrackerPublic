@@ -48,11 +48,13 @@ public class SecretController {
 	@Autowired
 	private ErrorService errorService;
 	
+	// Get all secrets from the database;
 	@GetMapping("/secrets")
 	public @ResponseBody List<Secret> secrets(){
 		return (List<Secret>) secretRepository.findAll();
 	}
 	
+	// Get a secret with specific id
 	@GetMapping("/secrets/{id}")
 	public @ResponseBody ResponseEntity<Optional<Secret>> getSecretById(@PathVariable("id") Long secretId){
 		Optional<Secret> secret = secretRepository.findById(secretId);
@@ -64,12 +66,13 @@ public class SecretController {
 		}
 	}
 	
+	// Create a new secret
 	@PostMapping("/secrets")
 	public @ResponseBody ResponseEntity<Map<String, String>> addSecret(@Valid @RequestBody SecretDto secret, BindingResult bindingResult){
 		Map<String, String> response = new HashMap<>();
 		String message;
 		
-		if(bindingResult.hasErrors()) {			
+		if(bindingResult.hasErrors()) {	// If validation notices errors in the data	
 			message = errorService.createErrorMessage(bindingResult);
 			response.put("status", "400");
 			response.put("message", message);
@@ -79,7 +82,7 @@ public class SecretController {
 		Optional<Location> location = locationRepository.findById(secret.getLocationId());
 		Optional<Tool> tool = toolRepository.findById(secret.getToolId());
 		
-		if(location.isEmpty()) {
+		if(location.isEmpty()) { // If location with the given id was not found in the database
 			message = "Location not found with given id";
 			response.put("status", "400");
 			response.put("message", message);
@@ -95,13 +98,12 @@ public class SecretController {
 			newTool = tool.get();
 		}
 		
-		if(secret.getImage() != null) {
+		if(secret.getImage() != null) { // If Dto contains base64-encoded string containing the image
 			try {
-				image = Base64.getDecoder().decode(new String(secret.getImage()).getBytes("UTF-8"));
+				image = Base64.getDecoder().decode(new String(secret.getImage()).getBytes("UTF-8")); // Converting the base64-string to byte[];
 			}catch(UnsupportedEncodingException e) {
 				
 			}
-			
 		}
 		
 		Secret newSecret = new Secret(
@@ -121,12 +123,13 @@ public class SecretController {
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 	
+	// Modify a secret with a specific id
 	@PutMapping("/secrets/{id}")
 	public @ResponseBody ResponseEntity<Map<String, String>> modifySecret(@Valid @RequestBody SecretDto secretDto, BindingResult bindingResult, @PathVariable("id") Long secretId){
 		Map<String, String> response = new HashMap<>();
 		String message;
 		
-		if(bindingResult.hasErrors()) {
+		if(bindingResult.hasErrors()) { // If validation notices any errors in the data
 			message = errorService.createErrorMessage(bindingResult);
 			response.put("status", "400");
 			response.put("message", message);
@@ -137,7 +140,7 @@ public class SecretController {
 		Optional<Location> location = locationRepository.findById(secretDto.getLocationId());
 		Optional<Tool> tool = toolRepository.findById(secretDto.getToolId());
 		
-		if(secret.isEmpty()) {
+		if(secret.isEmpty()) { // If secret with the given id was not found
 			message = "Secret with the given id not found";
 			
 			response.put("status", "404");
@@ -148,8 +151,9 @@ public class SecretController {
 		Secret newSecret = secret.get();
 		Location newLocation = null;
 		Tool newTool = null;
+		byte[] image = null;
 		
-		if(location.isEmpty()) {
+		if(location.isEmpty()) { // If location with the given id was not found in the database
 			message = "Location with the given id not found";
 			
 			response.put("status", "400");
@@ -164,10 +168,19 @@ public class SecretController {
 			newTool = tool.get();
 		}
 		
+		if(secretDto.getImage() != null) { // If Dto contains base64-encoded string containing the image
+			try {
+				image = Base64.getDecoder().decode(new String(secretDto.getImage()).getBytes("UTF-8")); // Converting the base64-string to byte[]
+			}catch(UnsupportedEncodingException e) {
+				
+			}
+		}
+		
 		newSecret.setSecret(secretDto.getSecret());
 		newSecret.setCleared(secretDto.isCleared());
 		newSecret.setLocationId(newLocation);
 		newSecret.setToolId(newTool);
+		newSecret.setImage(image);
 		
 		secretRepository.save(newSecret);
 		
@@ -179,6 +192,7 @@ public class SecretController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
+	// Set 'cleared' value of a secret as true
 	@PatchMapping("/secrets/{id}")
 	public @ResponseBody ResponseEntity<Map<String, String>> markSecretAsCleared(@PathVariable("id") Long secretId){
 		Map<String, String> response = new HashMap<>();
@@ -186,7 +200,7 @@ public class SecretController {
 		
 		Optional<Secret> secret = secretRepository.findById(secretId);
 		
-		if(secret.isEmpty()) {
+		if(secret.isEmpty()) { // If secret with the given id was not found
 			message = "Secret with the given id was not found";
 			response.put("status", "404");
 			response.put("message", message);
@@ -203,11 +217,12 @@ public class SecretController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
+	// Deletes a secret with a specific id
 	@DeleteMapping("/secrets/{id}")
 	public @ResponseBody ResponseEntity<Optional<Secret>> deleteSecret(@PathVariable("id") Long secretId){
 		Optional<Secret> secret = secretRepository.findById(secretId);
 		
-		if(secret.isEmpty()) {
+		if(secret.isEmpty()) { // If secret with the given id was not found
 			return new ResponseEntity<>(secret, HttpStatus.NOT_FOUND);
 		}
 		

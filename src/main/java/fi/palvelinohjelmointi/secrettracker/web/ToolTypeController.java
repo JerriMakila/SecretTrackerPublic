@@ -37,11 +37,13 @@ public class ToolTypeController {
 	@Autowired
 	private ErrorService errorService;
 	
+	// Get all tooltypes
 	@GetMapping("/tooltypes")
 	public @ResponseBody List<ToolType> toolTypes(){
 		return (List<ToolType>) toolTypeRepository.findAll();
 	}
 	
+	// Get a tooltype with specific id
 	@GetMapping("/tooltypes/{id}")
 	public @ResponseBody ResponseEntity<Optional<ToolType>> getToolTypeById(@PathVariable("id") Long toolTypeId){
 		Optional<ToolType> toolType = toolTypeRepository.findById(toolTypeId);
@@ -53,12 +55,13 @@ public class ToolTypeController {
 		return new ResponseEntity<>(toolType, HttpStatus.OK);
 	}
 	
+	// Create a tooltype
 	@PostMapping("/tooltypes")
 	public @ResponseBody ResponseEntity<Map<String, String>> addToolType(@Valid @RequestBody ToolType toolType, BindingResult bindingResult){
 		Map<String, String> response = new HashMap<>();
 		String message;
 		
-		if(bindingResult.hasErrors()) { // If validation notices error in request body
+		if(bindingResult.hasErrors()) { // If validation notices errors in the request body
 			message = errorService.createErrorMessage(bindingResult);
 			response.put("status", "400");
 			response.put("message", message);
@@ -75,6 +78,7 @@ public class ToolTypeController {
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 	
+	// Modify a tooltype with a specific id
 	@PutMapping("/tooltypes/{id}")
 	public @ResponseBody ResponseEntity<Map<String, String>> editToolType(@Valid @RequestBody ToolType requestToolType, BindingResult bindingResult,
 			@PathVariable("id") Long toolTypeId){
@@ -91,7 +95,7 @@ public class ToolTypeController {
 		
 		Optional<ToolType> toolType = toolTypeRepository.findById(toolTypeId);
 		
-		if(toolType.isEmpty()) {
+		if(toolType.isEmpty()) { // If tooltype with the given id was not found
 			message = "No tooltype found with the given id";
 			response.put("status", "404");
 			response.put("message", message);
@@ -109,6 +113,8 @@ public class ToolTypeController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
+	
+	// Delete a tooltype with specific id
 	@DeleteMapping("/tooltypes/{id}")
 	public @ResponseBody ResponseEntity<Map<String, String>> deleteToolType(@PathVariable("id") Long toolTypeId){
 		Map<String, String> response = new HashMap<>();
@@ -116,7 +122,7 @@ public class ToolTypeController {
 		
 		Optional<ToolType> toolType = toolTypeRepository.findById(toolTypeId);
 		
-		if(toolType.isEmpty()) {
+		if(toolType.isEmpty()) { // If tooltype with the given id was not found
 			message = "ToolType with the given id not found";
 			response.put("status", "404");
 			response.put("message", message);
@@ -126,7 +132,7 @@ public class ToolTypeController {
 		
 		List<Tool> tools = toolRepository.findByTooltypeId(toolType.get());
 		
-		if(tools.size() > 0) { // If there are tools associated with the tool type in question
+		if(tools.size() > 0) { // If there are tools associated with the tooltype in question
 			message = "Tooltype has benn already linked with tools";
 			response.put("status", "400");
 			response.put("message", message);

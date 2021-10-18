@@ -33,7 +33,7 @@ public class Secret {
 	@JoinColumn(name = "tool_id")
 	private Tool toolId;
 	
-	@Type(type="org.hibernate.type.BinaryType")
+	@Type(type="org.hibernate.type.BinaryType") // @Lob-annotation didn't work for some reason, this seems to be a viable alternative
 	private byte[] image;
 	
 	public Secret() {}

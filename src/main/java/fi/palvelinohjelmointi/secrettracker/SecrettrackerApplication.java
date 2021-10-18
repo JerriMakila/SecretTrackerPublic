@@ -21,6 +21,7 @@ public class SecrettrackerApplication {
 		SpringApplication.run(SecrettrackerApplication.class, args);
 	}
 	
+	// Adding some information to the database. This will be of no use when PostgreSQL is being used
 	/*@Bean
 	public CommandLineRunner secretDemo(ToolTypeRepository tpRepo, LocationRepository lRepo, ToolRepository tRepo, SecretRepository sRepo) {
 		return(args) ->{

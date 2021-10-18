@@ -1,6 +1,5 @@
 package fi.palvelinohjelmointi.secrettracker.dto;
 
-import javax.persistence.Lob;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -19,7 +18,7 @@ public class SecretDto {
 	private long locationId;
 	
 	private long toolId;
-	private String image;
+	private String image; // base64 encoded String, will be decoded to byte[] in the controller
 	
 	public SecretDto() {}
 
