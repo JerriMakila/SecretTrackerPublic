@@ -16,7 +16,7 @@ async function getLocations(){
 async function getTools(){
     const response = await fetch(`${baseUrl}/tools`);
     const tools = await response.json();
-    let toolsSelect = "<option>Unknown</option>";
+    let toolsSelect = "<option value=''>Unknown</option>";
 
     for(const tool of tools){
         toolsSelect += `<option value="${tool.toolId}">${tool.tool}</option>`;
@@ -67,6 +67,8 @@ async function buildRequest(formData, secretId){
 
     if(response.status === "200"){
         document.location.href = `/secretsbylocation/${requestBody.locationId}`;
+    } else{
+        console.log(response);
     }
 }
 
@@ -75,12 +77,13 @@ function processFormData(formData){
 
     for(let [key, value] of formData){
         if(value === ''){
-            value = null;
+            continue;
         }
     
         returnBody[key] = value;
     }
 
+    console.log(returnBody);
     return returnBody;
 }
 
