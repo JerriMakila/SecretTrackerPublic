@@ -1,3 +1,5 @@
+const baseUrl = "http://secret-tracker-test.herokuapp.com/";
+
 async function getLocations(){
     const data = await fetch(`${baseUrl}locations`)
     const locations = await data.json();
