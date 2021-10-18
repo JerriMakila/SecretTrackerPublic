@@ -1,5 +1,3 @@
-const baseUrl = 'http://localhost:8080/';
-
 async function showsecret(){
     const secretId = getSecretId();
     const secret = await fetchSecret(secretId);

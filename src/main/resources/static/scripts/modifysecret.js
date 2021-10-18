@@ -1,4 +1,3 @@
-const baseUrl = 'http://localhost:8080/';
 let secretDto = {};
 
 async function getLocations(){

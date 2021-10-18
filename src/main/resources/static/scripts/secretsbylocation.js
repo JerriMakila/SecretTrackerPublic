@@ -1,5 +1,3 @@
-const baseUrl = "http://localhost:8080/";
-
 function getPathVariable(){
     const pathname = window.location.pathname;
     const pathArray = pathname.split("/");

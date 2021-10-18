@@ -1,5 +1,3 @@
-const baseUrl = "http://localhost:8080/";
-
 async function processForm(event){
     event.preventDefault();
     const locationId = Number(getLocationId());
