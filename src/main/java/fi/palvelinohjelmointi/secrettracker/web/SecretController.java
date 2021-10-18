@@ -174,6 +174,8 @@ public class SecretController {
 			}catch(UnsupportedEncodingException e) {
 				
 			}
+		}else {
+			image = newSecret.getImage();
 		}
 		
 		newSecret.setSecret(secretDto.getSecret());

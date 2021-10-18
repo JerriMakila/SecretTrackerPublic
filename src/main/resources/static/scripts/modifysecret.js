@@ -2,7 +2,7 @@ const baseUrl = 'http://localhost:8080/';
 let secretDto = {};
 
 async function getLocations(){
-    const response = await fetch(`${baseUrl}/locations`);
+    const response = await fetch(`${baseUrl}locations`);
     const locations = await response.json();
     let locationsSelect = "";
 
@@ -14,7 +14,7 @@ async function getLocations(){
 }
 
 async function getTools(){
-    const response = await fetch(`${baseUrl}/tools`);
+    const response = await fetch(`${baseUrl}tools`);
     const tools = await response.json();
     let toolsSelect = "<option value=''>Unknown</option>";
 

@@ -17,22 +17,24 @@ import fi.palvelinohjelmointi.secrettracker.web.UserDetailServiceImpl;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
     private UserDetailServiceImpl userDetailsService;	
-	
 	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-	 http
-	 .authorizeRequests()
-	 .antMatchers("/", "/home").permitAll()
-	 .anyRequest().authenticated()
-	 .and()
-	 .formLogin()
-	 .loginPage("/login")
-	 .defaultSuccessUrl("/studentlist", true)
-	 .permitAll()
-	.and()
-	 .logout()
-	 .permitAll();
-	 }
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+        .csrf().disable()
+        .authorizeRequests().antMatchers("/css/**").permitAll()
+        .and()
+        .authorizeRequests()
+          .anyRequest().authenticated()
+          .and()
+      .formLogin()
+          .defaultSuccessUrl("/locationlist", true)
+          .permitAll()
+          .and()
+      .logout()
+          .permitAll()
+        .and()
+        .httpBasic(); // httpBasic makes it easier to authorize REST-requests from client
+    }
     
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
