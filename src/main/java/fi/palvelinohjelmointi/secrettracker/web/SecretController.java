@@ -177,7 +177,7 @@ public class SecretController {
 		}
 		
 		newSecret.setSecret(secretDto.getSecret());
-		newSecret.setCleared(secretDto.isCleared());
+		newSecret.setCleared(newSecret.getCleared());
 		newSecret.setLocationId(newLocation);
 		newSecret.setToolId(newTool);
 		newSecret.setImage(image);

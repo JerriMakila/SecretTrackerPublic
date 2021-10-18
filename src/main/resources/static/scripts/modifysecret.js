@@ -52,22 +52,40 @@ async function processForm(event){
     const id = getPathVariable();
     const form = document.getElementById("secret-modification");
     const formData = new FormData(form);
-    let body = {};
+    const imageUploaded = hasImages();
 
-    for(const [key, value] of formData){
-        if(key === "locationId" || key === "toolId"){
-            body[key] = Number(value);
-        }else{
-            body[key] = value;
-        }
+    if(imageUploaded){
+        processImage(formData, id);
+    }else{
+        buildRequest(formData, id);
     }
+}
 
-    const request = JSON.stringify(body);
-    const response = await submitForm(request, id);
+async function buildRequest(formData, secretId){
+    const requestBody = processFormData(formData);
+    const response = await submitForm(JSON.stringify(requestBody), secretId);
 
     if(response.status === "200"){
-        document.location.href = `/secretsbylocation/${secretDto.locationId}`;
+        document.location.href = `/secretsbylocation/${requestBody.locationId}`;
     }
+}
+
+function processFormData(formData){
+    let returnBody = {};
+
+    for(let [key, value] of formData){
+        if(value === ''){
+            value = null;
+        }
+    
+        returnBody[key] = value;
+    }
+
+    return returnBody;
+}
+
+function hasImages(){
+    return document.getElementById("image").files.length > 0;
 }
 
 async function submitForm(request, id){
@@ -88,6 +106,19 @@ function getPathVariable(){
     const pathname = window.location.pathname;
     pathArr = pathname.split("/");
     return pathArr[2];
+}
+
+async function processImage(formData, secretId){
+    const image = document.getElementById("image").files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(){
+        const base64Str = reader.result.replace("data:", "").replace(/^.+,/, "");
+        formData.append("image", base64Str)
+        buildRequest(formData, secretId);
+    }
+
+    reader.readAsDataURL(image);
 }
 
 getLocations();
