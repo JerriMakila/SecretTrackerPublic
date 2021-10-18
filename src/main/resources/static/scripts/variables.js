@@ -1,1 +1,0 @@
-const baseUrl = "http://secret-tracker-test.herokuapp.com/";
