@@ -1,5 +1,3 @@
-const baseUrl = "http://localhost:8080/";
-
 async function getLocations(){
     const data = await fetch(`${baseUrl}locations`)
     const locations = await data.json();
