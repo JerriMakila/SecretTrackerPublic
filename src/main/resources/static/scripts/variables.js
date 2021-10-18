@@ -1,1 +1,1 @@
-const baseUrl = "http://https://secret-tracker-test.herokuapp.com/"; // toimiiko ignore?
+const baseUrl = "http://secret-tracker-test.herokuapp.com/";
