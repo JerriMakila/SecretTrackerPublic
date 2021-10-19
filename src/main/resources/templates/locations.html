@@ -8,6 +8,11 @@
 </head>
 <body>
     <div class="content">
+        <div class="col-md-4" style="padding:20px 0">
+			<form th:action="@{/logout}" method="post">
+				<input type="submit" value="Sign Out" class="btn btn-sm btn-danger"/>
+			</form>
+		</div>
         <div><h1>Locations</h1></div>
         <p><a class="button btn btn-success" href="/addlocation">Add a location</a></p>
         <div class="locations-table">
