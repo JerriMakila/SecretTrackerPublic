@@ -1,15 +1,31 @@
-let pathVariables;
-
-function getLocationId(){
-    const pathname = window.location.pathname;
-    pathVariables = pathname.split("/");
-}
-
+// This function is called from html
 async function processForm(event, endpoint, formId){
     event.preventDefault();
-    getLocationId();
+    const formData = getFormData(formId);
+    const requestBody = createRequestBody(formData);
+    const response = await submitForm(requestBody, endpoint);
+    let errorMsgContainer = document.getElementById("error-msg");
+
+    if(response === null){
+        errorMsgContainer.innerHTML = "Something went wrong, please try again";
+    }else{
+        if(response.status === "201"){
+            document.location.href = `/locationlist`;
+            errorMsgContainer = "";
+        }else{
+            errorMsgContainer = response.message;
+        }
+    }
+}
+
+function getFormData(formId){
     const form = document.getElementById(formId);
     const formData = new FormData(form);
+
+    return formData;
+}
+
+function createRequestBody(formData){
     let body = {};
 
     for(let [key, value] of formData){
@@ -20,29 +36,28 @@ async function processForm(event, endpoint, formId){
         body[key] = value;
     }
 
-    if(pathVariables.length > 2){
-        body.locationId = Number(pathVariables[2]);
-    }
-
-    const postBody = JSON.stringify(body);
-    const response = await submitForm(postBody, endpoint);
-    console.log(response);
-
-    if(response.status === "201"){
-        document.location.href = `/locationlist`;
-    }
+    const requestBody = JSON.stringify(body);
+    return requestBody;
 }
 
 async function submitForm(postBody, endpoint){
-    const data = await fetch(`${baseUrl}${endpoint}`, {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        body: postBody, // body data type must match "Content-Type" header
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
+    let data;
+    let response;
 
-    const response = await data.json();
+    try{
+        data = await fetch(`${baseUrl}${endpoint}`, {
+            method: 'POST',
+            body: postBody,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        response = await data.json();
+    }catch{
+        response = null;
+    }
+    
     return response;
 }
 
